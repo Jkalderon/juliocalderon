@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta name="description" content="Portafolio de Julio Calderón, experto en Ciberseguridad, Hacking Ético y Prevención de Fraude. Soluciones de seguridad digital avanzadas.">
+    <meta name="theme-color" content="#0df259">
+    <title>Portafolio Ciberseguridad | Julio Calderón</title>
+    
+    <!-- Optimización de carga: Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Fuente Mono para la terminal -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Nota: Para producción real, se recomienda compilar Tailwind en lugar de usar CDN) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Configuración Tailwind Personalizada -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0df259", // Matrix Green
+                        "cyan-electric": "#00f3ff",
+                        "background-light": "#f5f8f6",
+                        "background-dark": "#050a06", // Almost black
+                        "terminal-bg": "#0c0c0c",
+                        "terminal-header": "#1a1a1a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["Fira Code", "monospace"],
+                    },
+                    backgroundImage: {
+                        'cyber-grid': "linear-gradient(rgba(13, 242, 89, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(13, 242, 89, 0.1) 1px, transparent 1px)",
+                    },
+                    boxShadow: {
+                        'neon': '0 0 5px theme("colors.primary"), 0 0 20px theme("colors.primary")',
+                        'neon-cyan': '0 0 5px theme("colors.cyan-electric"), 0 0 20px theme("colors.cyan-electric")',
+                    },
+                    animation: {
+                        'blink': 'blink 1s step-end infinite',
+                    },
+                    keyframes: {
+                        blink: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0' },
+                        }
+                    }
+                },
+            },
+        }
+    </script>
+
+    <!-- Estilos CSS Globales -->
+    <style>
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(13, 242, 89, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(13, 242, 89, 0.05) 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+            will-change: transform; /* Optimización de renderizado */
+        }
+        /* Scrollbar Personalizado */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #183422; border: 1px solid #0df259; }
+        ::-webkit-scrollbar-thumb:hover { background: #22492f; }
+        
+        /* Estilos del Modal */
+        #popup-qr {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        #popup-qr.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #popup-qr:not(.hidden) {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-[#e5e5e5] font-display antialiased overflow-x-hidden selection:bg-primary selection:text-black">
+    
+    <!-- Fondo Grid Fijo -->
+    <div class="fixed inset-0 z-0 pointer-events-none bg-grid-pattern h-full w-full" aria-hidden="true"></div>
+
+    <div class="relative z-10 flex min-h-screen flex-col">
+
+        <!-- Header / Barra de Navegación -->
+        <header class="sticky top-0 z-50 w-full border-b border-primary/20 bg-black/80 backdrop-blur-md">
+            <div class="layout-container flex h-full grow flex-col">
+                <div class="px-4 md:px-10 py-3 flex items-center justify-between whitespace-nowrap">
+                    <!-- Logo / Terminal -->
+                    <div class="flex items-center gap-3 text-primary select-none">
+                        <span class="material-symbols-outlined text-2xl" aria-hidden="true">terminal</span>
+                        <h2 class="text-base md:text-lg font-bold tracking-wider">root@jcalderon:~$</h2>
+                    </div>
+                    
+                    <!-- Menú -->
+                    <div class="flex items-center gap-6">
+                        <nav class="hidden md:flex gap-6" aria-label="Navegación principal">
+                            <a class="text-sm font-medium hover:text-primary transition-colors hover:underline decoration-primary underline-offset-4" href="#resources">/recursos</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors hover:underline decoration-primary underline-offset-4" href="#timeline">/Post</a>
+                            <a class="text-sm font-medium hover:text-primary transition-colors hover:underline decoration-primary underline-offset-4" href="#about">/sobre_mi</a>
+                        </nav>
+                        <!-- Botón Conectar (Abre Modal QR) -->
+                        <button type="button" aria-label="Abrir QR de contacto" onclick="toggleModal()" class="hidden sm:flex items-center justify-center h-8 px-4 border border-primary text-primary text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-black transition-all duration-300 shadow-[0_0_10px_rgba(13,242,89,0.2)] hover:shadow-neon cursor-pointer">
+                            Conectar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 flex flex-col items-center w-full">
+            
+            <!-- Sección Hero (Principal) -->
+            <section class="w-full max-w-[1200px] px-6 py-20 md:py-32 flex flex-col items-center">
+                
+                <!-- Contenedor Flex para Foto y Texto -->
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12 w-full mb-12">
+                    
+                    <!-- Avatar con Efecto Neon (Alineado a la izquierda en MD) -->
+                    <div class="relative group cursor-pointer flex-shrink-0">
+                        <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-primary to-cyan-electric opacity-75 blur transition duration-500 group-hover:opacity-100 animate-pulse"></div>
+                        <div class="relative h-40 w-40 md:h-48 md:w-48 rounded-full border-2 border-primary bg-black p-1 overflow-hidden">
+                            <!-- Optimización: fetchpriority="high" para LCP -->
+                            <img 
+                                src="./Data/JC.webp" 
+                                alt="Fotografía Julio Calderón" 
+                                width="192"
+                                height="192"
+                                fetchpriority="high"
+                                class="h-full w-full rounded-full object-cover"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Título y Subtítulo (Texto a la derecha) -->
+                    <div class="text-center md:text-left flex flex-col justify-center h-full pt-4 md:pt-8">
+                        <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold text-white tracking-tighter mb-4 leading-tight">
+                            <span class="text-primary">Julio Calderón</span>,<br>haciendo el internet<span class="text-cyan-electric"> más seguro</span>
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-400 font-mono">
+                            &gt; Sitio web de recursos para apoyar a entunciastas de la seguridad digital
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Resumen Profesional (Estilo Terminal Linux) -->
+                <div class="w-full text-left bg-terminal-bg border border-gray-700 rounded-lg overflow-hidden shadow-2xl font-mono mt-4 transform hover:scale-[1.01] transition-transform duration-300">
+                    <!-- Barra de título Terminal -->
+                    <div class="bg-terminal-header px-4 py-2 flex items-center gap-2 border-b border-gray-700" aria-hidden="true">
+                        <div class="flex gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <div class="flex-1 text-center text-xs text-gray-400 font-mono">user@jcalderon ~/Sobre este Proyecto</div>
+                    </div>
+                    <!-- Contenido Terminal -->
+                    <div class="p-6 md:p-8 text-sm md:text-base text-gray-300 leading-relaxed">
+                        <div class="mb-4" aria-hidden="true">
+                            <span class="text-primary">root@jcalderon:~$</span> <span class="text-white">cat Recursos_de_seguridad.txt</span>
+                        </div>
+                        <p class="mb-4 text-primary/90">
+                            > El reto de la ciberseguridad en la era digital exige soluciones innovadoras y adaptativas.
+                        </p>
+                        <p>
+                            Velar por la seguridad de los datos y sistemas en una empresa es una tarea abrumadora, más aún cuando debes iniciar practicamente desde cero. He vivido muchas veces esta situación, y se lo complejo de la tarea cuando no se dispone de recursos para inciar.
+                        </p>
+                        <br>
+                        <p>
+                            Este sitio web nace como un compendio de recursos, guías y herramientas prácticas que he recopilado a lo largo de mi carrera. Mi objetivo es facilitar el acceso a materiales de calidad para profesionales y entusiastas que buscan fortalecer sus conocimientos y habilidades.
+                        </p>
+                        <br>
+                        <p>
+                            Ten la libertad y confianza de navegar por este web y utilizar los recursos que consideres necesarios sin restricción. Si te es de utilidad y deseas compartir tus proyecto con el resto de la comunidad, hablemos al respecto.
+                        </p>
+                        <div class="mt-4" aria-hidden="true">
+                            <span class="text-primary">root@jcalderon:~$</span> <span class="animate-blink block w-3 h-5 bg-primary inline-block align-middle ml-1"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sección Recursos (Reordenada y Ampliada) -->
+            <section class="w-full max-w-[1200px] px-6 py-16" id="resources">
+                <div class="flex items-center gap-2 mb-10 border-b border-gray-800 pb-4">
+                    <span class="material-symbols-outlined text-primary" aria-hidden="true">folder_open</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Galería de Recursos por temáticas de Gestión</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 1. Ciberseguridad -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-primary transition-all duration-300 hover:shadow-[0_0_15px_rgba(13,242,89,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-black transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">shield_lock</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-primary transition-colors">Ciberseguridad</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Recursos orientados a la protección informatica (blue team) en entornos personales y profesionales.</p>
+                        <a class="inline-flex items-center text-sm font-bold text-primary uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Ver Info</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                    <!-- 2. Hacking Ético -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-cyan-electric transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,243,255,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-cyan-electric/10 flex items-center justify-center text-cyan-electric group-hover:bg-cyan-electric group-hover:text-black transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">terminal</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-cyan-electric transition-colors">Hacking Ético</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Herramientas para tareas de auditoría y pentesting (red team) con fines éticos y educativos.</p>
+                        <a class="inline-flex items-center text-sm font-bold text-cyan-electric uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Repositorio</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                    <!-- 3. Inteligencia Artificial -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-blue-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">smart_toy</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Inteligencia Artificial</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Material orientado a evaluar la seguridad en la implementación de agentes y modelos de IA.</p>
+                        <a class="inline-flex items-center text-sm font-bold text-blue-500 uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Explorar</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                    <!-- 4. Antifraude -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-red-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-red-500/10 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">fingerprint</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-red-400 transition-colors">Antifraude</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Técnicas de detección de anomalías transaccionales y prevención de robo de identidad digital.</p>
+                        <a class="inline-flex items-center text-sm font-bold text-red-500 uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Analítica</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                    <!-- 5. Riesgo Operacional -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-yellow-400 transition-all duration-300 hover:shadow-[0_0_15px_rgba(250,204,21,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-yellow-400/10 flex items-center justify-center text-yellow-400 group-hover:bg-yellow-400 group-hover:text-black transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">warning</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-yellow-400 transition-colors">Riesgo Operacional</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Evaluación y mitigación de fallos en procesos, personas y sistemas según la normativa ISO 31000.</p>
+                        <a class="inline-flex items-center text-sm font-bold text-yellow-400 uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Metodologías</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                    <!-- 6. Continuidad del Negocio -->
+                    <article class="group relative bg-[#0a110c] border border-gray-800 p-6 rounded-lg hover:border-purple-500 transition-all duration-300 hover:shadow-[0_0_15px_rgba(168,85,247,0.15)] flex flex-col gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-300">
+                                <span class="material-symbols-outlined text-2xl">update</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">Continuidad del Negocio</h3>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed flex-1">Estrategias de resiliencia operacional empresarial: BIA, BCP, DRP, basado en la normativa ISO 22301</p>
+                        <a class="inline-flex items-center text-sm font-bold text-purple-500 uppercase tracking-wider hover:text-white mt-auto" href="#">
+                            <span class="mr-2">Ver Planes</span>
+                            <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward_ios</span>
+                        </a>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- SECCIÓN: Temas de Interés (Timeline) -->
+            <section class="w-full max-w-[1200px] px-6 py-16" id="timeline">
+                <div class="flex items-center gap-2 mb-10 border-b border-gray-800 pb-4">
+                    <span class="material-symbols-outlined text-primary" aria-hidden="true">timeline</span>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Temas de Interés</h2>
+                </div>
+                
+                <div class="relative border-l border-gray-800 ml-4 md:ml-6 space-y-12">
+                    <!-- Entrada 1 -->
+                    <article class="relative pl-8 md:pl-12 group">
+                        <!-- Dot Indicador -->
+                        <span class="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-black shadow-[0_0_8px_theme('colors.primary')] group-hover:scale-125 transition-transform duration-300"></span>
+                        <span class="text-xs font-mono text-primary mb-1 block">DIC 2025</span>
+                        
+                        <!-- Título con Enlace -->
+                        <h3 class="text-lg font-bold text-white mb-2">
+                            <a href="#" class="hover:text-cyan-electric hover:underline decoration-cyan-electric underline-offset-4 transition-all">
+                                Pasamos de Shadow It a Shadow IA, Sabes desde donde se está generando la información de tu empresa?
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 text-sm max-w-2xl leading-relaxed">Se puede contener la avalancha que representa la adopción de agentes de IA en los entornos empresariales, en mi opinión la respuesta es "NO" y debido a esa realidad hay cosas por hacer.</p>
+                    </article>
+
+                    <!-- Entrada 2 -->
+                    <article class="relative pl-8 md:pl-12 group">
+                        <!-- Dot Indicador -->
+                        <span class="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-cyan-electric ring-4 ring-black shadow-[0_0_8px_theme('colors.cyan-electric')] group-hover:scale-125 transition-transform duration-300"></span>
+                        <span class="text-xs font-mono text-cyan-electric mb-1 block">NOV 2025</span>
+                        
+                        <!-- Título con Enlace -->
+                        <h3 class="text-lg font-bold text-white mb-2">
+                            <a href="#" class="hover:text-cyan-electric hover:underline decoration-cyan-electric underline-offset-4 transition-all">
+                                Ley #1 de la protección de identidad: Multifactor de autenticación para todos sin excepción
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 text-sm max-w-2xl leading-relaxed">Vivimos una realidad multicloud, cada usuario de tu empresa utiliza al menos cinco servicios en nube, como protegemos su identidad y evitamos accesos no autorizados?</p>
+                    </article>
+
+                    <!-- Entrada 3 -->
+                    <article class="relative pl-8 md:pl-12 group">
+                        <!-- Dot Indicador -->
+                        <span class="absolute -left-[5px] top-2 h-2.5 w-2.5 rounded-full bg-purple-500 ring-4 ring-black shadow-[0_0_8px_theme('colors.purple.500')] group-hover:scale-125 transition-transform duration-300"></span>
+                        <span class="text-xs font-mono text-purple-500 mb-1 block">OCT 2025</span>
+                        
+                        <!-- Título con Enlace -->
+                        <h3 class="text-lg font-bold text-white mb-2">
+                            <a href="#" class="hover:text-cyan-electric hover:underline decoration-cyan-electric underline-offset-4 transition-all">
+                                Aprendiendo y educando en tiempos de la Desinformación
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 text-sm max-w-2xl leading-relaxed">No todo lo que me dice la IA es verdadero, por eso es fundamental educar a los usuarios sobre cómo identificar información falsa y cómo usar la IA de manera crítica y responsable.</p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Sección Sobre Mí (Ancho Ajustado) -->
+            <section class="w-full max-w-[1200px] px-6 py-20" id="about">
+                <div class="bg-[#0f1912] border border-[#1f3a28] rounded-xl p-8 md:p-12 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-20">
+                        <span class="material-symbols-outlined text-9xl text-primary" aria-hidden="true">fingerprint</span>
+                    </div>
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="text-primary">&gt;</span> Sobre el Autor
+                        </h2>
+                        <div class="prose prose-invert prose-lg max-w-none text-gray-300 font-light mb-8">
+                            <p class="mb-4">
+                                Con más de 20 años de experiencia en el sector bancario, me especializo en la implementación de normativas internacionales como <strong class="text-white">ISO 27001, ISO 22301, ISO 31001</strong> el marco de ciberseguridad <strong class="text-white">NIST 2.0</strong>, y regulaciones específicas del sector financiero.
+                            </p>
+                            <p>
+                                Al implementar diferentes marcos de gestión de riesgos y seguridad, he ayudado a organizaciones a fortalecer su postura de seguridad, reducir la superficie de ataque y garantizar la continuidad del negocio frente a amenazas cibernéticas en constante evolución.
+                            </p>
+                            <br>
+                            <p>
+                                En los últimos años he enfocado mi carrera en la integración de tecnologías emergentes como la <strong class="text-white">Inteligencia Artificial</strong>, así como a crear recursos educativos para compartir conocimientos y mejores prácticas en ciberseguridad.
+                        
+                        <!-- Redes Sociales Pequeñas -->
+                        <div class="flex flex-wrap gap-4 mt-8">
+                            <a aria-label="LinkedIn de Julio Calderón" rel="noopener noreferrer" target="_blank" class="flex items-center justify-center w-12 h-12 rounded bg-black border border-gray-700 text-white hover:border-[#0077b5] hover:text-[#0077b5] hover:shadow-[0_0_10px_#0077b5] transition-all duration-300" href="https://www.linkedin.com/in/julio-calder%C3%B3n-aguilar-5415b942/">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+                            </a>
+                            <a aria-label="GitHub de Julio Calderón" rel="noopener noreferrer" target="_blank" class="flex items-center justify-center w-12 h-12 rounded bg-black border border-gray-700 text-white hover:border-white hover:shadow-[0_0_10px_white] transition-all duration-300" href="https://github.com/Jkalderon">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.42-1.305.763-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+                            </a>
+                            <a aria-label="X (Twitter) de Julio Calderón" rel="noopener noreferrer" target="_blank" class="flex items-center justify-center w-12 h-12 rounded bg-black border border-gray-700 text-white hover:border-black hover:bg-white hover:text-black hover:shadow-[0_0_10px_white] transition-all duration-300" href="https://x.com/Calderjulio">
+                                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full border-t border-gray-900 bg-black py-8 mt-auto" id="contact">
+            <div class="px-6 md:px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-mono">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                    <span class="text-gray-500">© 2025 Sitio diseñado por Julio Calderón con fines no lucrativos.</span>
+                </div>
+                <!-- Este botón también abre el modal QR -->
+                <button type="button" aria-label="Abrir QR de contacto" onclick="toggleModal()" class="group flex items-center gap-2 bg-[#101010] px-4 py-2 rounded border border-gray-800 hover:border-primary hover:text-primary transition-colors cursor-pointer">
+                    <span class="text-primary font-bold">root@jcalderon:</span>
+                    <span class="text-gray-400 group-hover:text-white">~/contactame</span>
+                    <span class="w-2 h-4 bg-primary opacity-0 group-hover:opacity-100 animate-blink block"></span>
+                </button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Modal Popup QR (Reducido de tamaño) -->
+    <!-- Cambio: max-w-sm -> max-w-xs, p-8 -> p-6 -->
+    <div id="popup-qr" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="bg-[#0f1912] border-2 border-primary rounded-xl p-6 max-w-xs w-full relative shadow-[0_0_50px_rgba(13,242,89,0.3)] transform transition-all scale-100">
+            <!-- Botón Cerrar -->
+            <button type="button" aria-label="Cerrar modal" onclick="toggleModal()" class="absolute top-3 right-3 text-gray-400 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
+            
+            <div class="flex flex-col items-center text-center">
+                <span class="material-symbols-outlined text-3xl text-primary mb-3" aria-hidden="true">qr_code_scanner</span>
+                <h3 id="modal-title" class="text-lg font-bold text-white mb-2">Escanea para Conectar</h3>
+                <p class="text-gray-400 text-xs mb-4">Inicia un chat seguro directamente en WhatsApp.</p>
+                
+                <!-- Contenedor QR con borde neon -->
+                <div class="bg-white p-2 rounded mb-4 shadow-[0_0_10px_theme('colors.primary')]">
+                    <!-- Generador de QR dinámico (Imagen reducida de w-48 a w-40) - loading="lazy" para rendimiento -->
+                    <img 
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://wa.me/50378035879" 
+                        alt="Código QR de WhatsApp" 
+                        loading="lazy"
+                        class="w-40 h-40"
+                    >
+                </div>
+                
+                <a href="https://wa.me/50378035879" target="_blank" rel="noopener noreferrer" class="text-primary text-xs hover:underline decoration-primary underline-offset-4">
+                    o haz clic aquí para abrir WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para controlar el Modal y Efecto de Cursor -->
+    <script>
+        // --- Control del Modal ---
+        function toggleModal() {
+            const modal = document.getElementById('popup-qr');
+            modal.classList.toggle('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera del contenido
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('popup-qr').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    toggleModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
